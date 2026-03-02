@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KOBAMS REALTY & AUTOS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .whatsapp-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 12px;
+            background-color: #25D366;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+    <div class="logo">KOBAMS REALTY & AUTOS</div>
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#properties">Properties</a>
+        <a href="#vehicles">Vehicles</a>
+        <a href="#contact">Contact</a>
+    </nav>
+</header>
+
+<!-- HERO SECTION -->
+<section class="hero" id="home">
+    <div class="hero-content">
+        <h1>Exceptional Homes.</h1>
+        <h1>Timeless Luxury.</h1>
+        <p>Discover premium properties crafted for comfort and elegance.</p>
+        <button onclick="document.getElementById('properties').scrollIntoView()">
+            Explore Properties
+        </button>
+    </div>
+
+    <!-- SEARCH FORM -->
+    <form class="search-box" method="GET" action="/">
+        <input type="text" name="search" placeholder="Search by location">
+        <button type="submit">Search</button>
+    </form>
+</section>
+
+<!-- FEATURED PROPERTIES -->
+<section class="section" id="properties">
+    <h2>Featured Properties</h2>
+    <p class="subtitle">Handpicked luxury homes in prime locations</p>
+
+    <div class="grid">
+        {% for property in properties %}
+        <div class="card">
+            <img src="{{ url_for('static', filename=property.image) }}" alt="Property Image">
+            <div class="card-content">
+                <h3>{{ property.title }}</h3>
+                <p>{{ property.location }}</p>
+                <span>{{ property.price }}</span>
+
+                <a href="https://wa.me/{{ settings.whatsapp_number }}?text=Hello, I'm interested in {{ property.title }}"
+                   target="_blank"
+                   class="whatsapp-btn">
+                   Chat on WhatsApp
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- FEATURED VEHICLES -->
+<section class="section" id="vehicles">
+    <h2>Featured Vehicles</h2>
+    <p class="subtitle">Handpicked luxury cars</p>
+
+    <div class="grid">
+        {% for car in vehicles %}
+        <div class="card">
+            <img src="{{ url_for('static', filename=car.image) }}" alt="Vehicle Image">
+            <div class="card-content">
+                <h3>{{ car.title }}</h3>
+                <p>{{ car.location }}</p>
+                <span>{{ car.price }}</span>
+
+                <a href="https://wa.me/{{ settings.whatsapp_number }}?text=Hello, I'm interested in {{ car.title }}"
+                   target="_blank"
+                   class="whatsapp-btn">
+                   Chat on WhatsApp
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- WHY CHOOSE US -->
+<section class="why">
+    <h2>Why Choose Kobams Realty & Autos</h2>
+    <p class="subtitle">We provide premium homes and vehicles with unmatched service.</p>
+
+    <div class="why-grid">
+        <div class="why-card">
+            <div class="icon">🏠</div>
+            <h3>Prime Locations</h3>
+            <p>Listings in the most desirable areas.</p>
+        </div>
+
+        <div class="why-card">
+            <div class="icon">✔️</div>
+            <h3>Verified Listings</h3>
+            <p>Every property and vehicle is carefully verified.</p>
+        </div>
+
+        <div class="why-card">
+            <div class="icon">👤</div>
+            <h3>Dedicated Agents</h3>
+            <p>Trusted professionals ready to assist you.</p>
+        </div>
+    </div>
+</section>
+
+<!-- CALL TO ACTION -->
+<section class="cta">
+    <div class="cta-content">
+        <h2>Find Your Dream Home or Car Today</h2>
+        <p>Discover exclusive listings tailored to your lifestyle.</p>
+        <button onclick="document.getElementById('contact').scrollIntoView()">
+            Browse Listings
+        </button>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="contact">
+    <div class="footer-container">
+        <div>
+            <h3>KOBAMS REALTY & AUTOS</h3>
+            <p>📍 Abuja, Nigeria</p>
+            <p>
+                📞 
+                <a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank">
+                    {{ settings.whatsapp_number }}
+                </a>
+            </p>
+            <p>✉ kobamsnigltd.com</p>
+        </div>
+
+        <div class="footer-links">
+            <a href="#home">Home</a>
+            <a href="#properties">Properties</a>
+            <a href="#vehicles">Vehicles</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </div>
+
+    <hr>
+    <p class="copyright">
+        © 2026 Kobams Realty & Autos. All rights reserved.
+    </p>
+</footer>
+
+</body>
+</html>
