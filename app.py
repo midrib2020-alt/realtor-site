@@ -202,4 +202,4 @@ if __name__ == "__main__":
             db.session.add(default_settings)
             db.session.commit()
             
-    app.run()
+        app.run(host="0.0.0.0", port=5000)
