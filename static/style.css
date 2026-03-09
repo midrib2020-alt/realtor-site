@@ -254,7 +254,11 @@ hr{
     margin:40px 0;
     opacity:0.2;
 }
-
+/* Make WhatsApp number under contact white */
+footer .footer-container a {
+    color: white !important;
+    text-decoration: none;
+}
 /* FLOATING WHATSAPP BUTTON */
 .floating-whatsapp{
     position:fixed;
