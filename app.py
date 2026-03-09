@@ -198,7 +198,7 @@ if __name__ == "__main__":
 
         # Ensure WhatsApp settings row exists
         if Settings.query.first() is None:
-            default_settings = Settings(whatsapp_number="2347085257837")
+            default_settings = Settings(whatsapp_number="2348030964116")
             db.session.add(default_settings)
             db.session.commit()
             
