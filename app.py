@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 
 # ------------------ SECRET KEY ------------------
-app.secret_key = "KOBAMS__080309"
+app.secret_key = os.environ.get("SECRET_KEY", "KOBAMS__realty--autos--19--07--fuckuuuu")
 
 # ------------------ DATABASE CONFIG ------------------
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -69,7 +69,7 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        if username == "KOBAMS" and password == "080309":
+        if username == "KOBAMS" and password == "080309bloodyasssucker":
             session["logged_in"] = True
             return redirect(url_for("admin"))
         else:
