@@ -6,16 +6,27 @@ import os
 app = Flask(__name__)
 
 # ------------------ SECRET KEY ------------------
-app.secret_key = os.environ.get("SECRET_KEY", "KOBAMS__realty--autos--19--07--fuckuuuu")
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
 
 # ------------------ DATABASE CONFIG ------------------
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
+uri = os.environ.get("DATABASE_URL")
+
+# Fix Render PostgreSQL issue
+if uri and uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
+
+# Fallback for local
+if not uri:
+    uri = "sqlite:///database.db"
+
+app.config['SQLALCHEMY_DATABASE_URI'] = uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 db = SQLAlchemy(app)
 
-# ------------------ DATABASE MODELS ------------------
+# ------------------ MODELS ------------------
 
 class Property(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -36,7 +47,6 @@ class Vehicle(db.Model):
 class Settings(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     whatsapp_number = db.Column(db.String(20))
-
 
 # ------------------ HOME ROUTE ------------------
 
@@ -96,6 +106,12 @@ def admin():
 
     settings = Settings.query.first()
 
+    # ✅ Ensure settings exists ALWAYS
+    if not settings:
+        settings = Settings(whatsapp_number="")
+        db.session.add(settings)
+        db.session.commit()
+
     if request.method == "POST":
 
         # 🔹 Update WhatsApp number
@@ -104,7 +120,7 @@ def admin():
             db.session.commit()
             return redirect(url_for("admin"))
 
-        # 🔹 Handle Property / Vehicle Upload
+        # 🔹 Upload logic
         title = request.form["title"]
         location = request.form["location"]
         price = request.form["price"]
@@ -196,10 +212,11 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
 
-        # Ensure WhatsApp settings row exists
-        if Settings.query.first() is None:
-            default_settings = Settings(whatsapp_number="2348030964116")
-            db.session.add(default_settings)
+        # ✅ Ensure settings exists safely
+        settings = Settings.query.first()
+        if not settings:
+            settings = Settings(whatsapp_number="")
+            db.session.add(settings)
             db.session.commit()
-            
-        app.run(host="0.0.0.0", port=5000)
+
+    app.run(host="0.0.0.0", port=5000)
