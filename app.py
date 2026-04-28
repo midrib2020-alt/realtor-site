@@ -69,7 +69,10 @@ def home():
         vehicles=vehicles,
         settings=settings
     )
-
+@app.route("/create-db")
+def create_db():
+    db.create_all()
+    return "Database tables created successfully!"
 
 # ------------------ LOGIN ROUTE ------------------
 
