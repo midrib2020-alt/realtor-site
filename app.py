@@ -12,13 +12,13 @@ app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
 
 uri = os.environ.get("DATABASE_URL")
 
-# Fix Render PostgreSQL issue
-if uri and uri.startswith("postgres://"):
-    uri = uri.replace("postgres://", "postgresql://", 1)
-
-# Fallback for local
+# ❌ REMOVE SQLITE FALLBACK (VERY IMPORTANT)
 if not uri:
-    uri = "sqlite:///database.db"
+    raise RuntimeError("DATABASE_URL is not set! Check Render environment variables.")
+
+# Fix Render PostgreSQL issue
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -52,6 +52,8 @@ class Settings(db.Model):
 
 @app.route("/")
 def home():
+    print("USING DB:", app.config['SQLALCHEMY_DATABASE_URI'])  # 🔍 DEBUG
+
     search = request.args.get("search")
 
     if search:
@@ -86,14 +88,12 @@ def login():
 
     return render_template("login.html")
 
-
 # ------------------ LOGOUT ROUTE ------------------
 
 @app.route("/logout")
 def logout():
     session.pop("logged_in", None)
     return redirect(url_for("login"))
-
 
 # ------------------ ADMIN ROUTE ------------------
 
@@ -161,7 +161,6 @@ def admin():
         settings=settings
     )
 
-
 # ------------------ DELETE ROUTE ------------------
 
 @app.route("/delete/<string:item_type>/<int:item_id>")
@@ -179,7 +178,6 @@ def delete(item_type, item_id):
     db.session.commit()
 
     return redirect(url_for("admin"))
-
 
 # ------------------ EDIT ROUTE ------------------
 
@@ -203,7 +201,6 @@ def edit(item_type, item_id):
         return redirect(url_for("admin"))
 
     return render_template("edit.html", item=item, item_type=item_type)
-
 
 # ------------------ RUN APP ------------------
 
