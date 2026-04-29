@@ -12,7 +12,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
 
 uri = os.environ.get("DATABASE_URL")
 
-# ❌ REMOVE SQLITE FALLBACK (VERY IMPORTANT)
+# ❌ STOP APP if DB is not set (important)
 if not uri:
     raise RuntimeError("DATABASE_URL is not set! Check Render environment variables.")
 
@@ -52,7 +52,7 @@ class Settings(db.Model):
 
 @app.route("/")
 def home():
-    print("USING DB:", app.config['SQLALCHEMY_DATABASE_URI'])  # 🔍 DEBUG
+    print("USING DB:", app.config['SQLALCHEMY_DATABASE_URI'])
 
     search = request.args.get("search")
 
@@ -63,7 +63,8 @@ def home():
         properties = Property.query.all()
         vehicles = Vehicle.query.all()
 
-    settings = Settings.query.first()
+    # ✅ ALWAYS use ID = 1
+    settings = Settings.query.get(1)
 
     return render_template(
         "index.html",
@@ -103,11 +104,11 @@ def admin():
     if "logged_in" not in session:
         return redirect(url_for("login"))
 
-    settings = Settings.query.first()
+    # ✅ FORCE single settings row
+    settings = Settings.query.get(1)
 
-    # ✅ Ensure settings exists ALWAYS
     if not settings:
-        settings = Settings(whatsapp_number="")
+        settings = Settings(id=1, whatsapp_number="")
         db.session.add(settings)
         db.session.commit()
 
@@ -208,10 +209,10 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
 
-        # ✅ Ensure settings exists safely
-        settings = Settings.query.first()
+        # ✅ FORCE only ONE settings row
+        settings = Settings.query.get(1)
         if not settings:
-            settings = Settings(whatsapp_number="")
+            settings = Settings(id=1, whatsapp_number="")
             db.session.add(settings)
             db.session.commit()
 
